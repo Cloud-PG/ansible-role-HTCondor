@@ -4,4 +4,4 @@
 #condor_config_cm_ip: MANDATORY - NO DEFAULT AVAILABLE
 #condor_config_schedd_ip: MANDATORY - NO DEFAULT AVAILABLE
 
-condor_config_image: "ciangom/htcondor-docker-debian:ams-centos"
+condor_config_image: "ciangom/htcondor-docker-centos"
