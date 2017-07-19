@@ -1,0 +1,23 @@
+{
+  "id": "htcondor-submitter",
+  "args": ["-s", "{{condor_config_cm_ip}}", "-I", "{{condor_config_schedd_ip}}", "-k", "{{public_key_url}}"],
+  "cpus": 3,
+  "mem": 2048.0,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "{{condor_config_image}}",
+      "privileged": true,
+      "network": "HOST"
+    },
+    "volumes": [{
+        "containerPath": "/etc/ssh",
+        "hostPath": "/etc/ssh",
+        "mode": "RW"
+    }]
+  },
+  "constraints": [
+    ["hostname", "UNIQUE"],
+    ["hostname", "LIKE", "{{condor_config_schedd_ip}}"]
+  ]
+}

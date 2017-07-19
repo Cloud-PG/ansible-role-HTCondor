@@ -1,0 +1,16 @@
+{
+  "id": "htcondor-executor",
+  "args": ["-e", "{{condor_config_cm_ip}}"],
+  "cpus": 1,
+  "mem": 2000.0,
+  "instances": 2,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "{{condor_config_image}}",
+      "forcePullImage": true,
+      "privileged": true,
+      "network": "BRIDGE"
+    }
+  }
+}
