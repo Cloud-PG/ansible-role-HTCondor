@@ -1,6 +1,6 @@
 ---
 
-- name: start AMS Central Manager
+- name: start Central Manager
   run_once: true
   uri:
      url: "https://marathon.service.consul:8443/v2/groups"
@@ -17,4 +17,4 @@
   delay: 20
   changed_when: false
   tags:
-    - ams_apps
+    - condor_apps

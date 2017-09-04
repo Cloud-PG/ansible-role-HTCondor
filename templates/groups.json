@@ -2,20 +2,20 @@
   "id": "master",
   "apps":[
     {
-    "id": "htcondor-master-ams",
-    "args": ["-m", "{{ams_config_cm_ip}}"],
+    "id": "htcondor-master",
+    "args": ["-m", "{{condor_config_cm_ip}}"],
     "cpus": 1,
     "mem": 1024.0,
     "container": {
       "type": "DOCKER",
       "docker": {
-        "image": "{{ams_config_condor_image}}",
+        "image": "{{condor_config_image}}",
         "network": "HOST"
       }
     },
     "constraints": [
       ["hostname", "UNIQUE"],
-      ["hostname", "LIKE", "{{ams_config_cm_ip}}"]
+      ["hostname", "LIKE", "{{condor_config_cm_ip}}"]
     ]
     }
   ]
@@ -24,15 +24,15 @@
   "id": "schedd",
   "apps":[
     {
-    "id": "htcondor-submitter-ams",
-    "args": ["-s", "{{ams_config_cm_ip}}", "-I", "{{ams_config_schedd_ip}}", "-k", "{{public_key_url}}"],
+    "id": "htcondor-submitter",
+    "args": ["-s", "{{condor_config_cm_ip}}", "-I", "{{condor_config_schedd_ip}}", "-k", "{{public_key_url}}"],
     "cpus": 3,
     "mem": 2048.0,
     "dependencies": ["/master"],
     "container": {
       "type": "DOCKER",
       "docker": {
-        "image": "{{ams_config_condor_image}}",
+        "image": "{{condor_config_image}}",
         "privileged": true,
         "network": "HOST"
       },
@@ -48,12 +48,8 @@
     },
     "constraints": [
       ["hostname", "UNIQUE"],
-      ["hostname", "LIKE", "{{ams_config_schedd_ip}}"]
-    ],
-    "env": {
-      "ONEDATA_ACCES_TOKEN": "{{ams_config_onedatatoken}}",
-      "AMS_ONEDATA_CACHE": "{{ams_config_onedatacache}}"
-    }
+      ["hostname", "LIKE", "{{condor_config_schedd_ip}}"]
+    ]
     }
   ]
 },
@@ -61,8 +57,8 @@
   "id": "worker-nodes",
   "apps":[
     {
-    "id": "htcondor-executor-ams",
-    "args": ["-e", "{{ams_config_cm_ip}}"],
+    "id": "htcondor-executor",
+    "args": ["-e", "{{condor_config_cm_ip}}"],
     "cpus": 1,
     "mem": 2000.0,
     "dependencies": ["/schedd"],
@@ -70,7 +66,7 @@
     "container": {
       "type": "DOCKER",
       "docker": {
-        "image": "{{ams_config_condor_image}}",
+        "image": "{{condor_config_image}}",
         "forcePullImage": true,
         "privileged": true,
         "network": "BRIDGE"
@@ -80,10 +76,6 @@
           "hostPath": "/cvmfs",
           "mode": "RW"
       }]
-    },
-    "env": {
-      "ONEDATA_ACCES_TOKEN": "{{ams_config_onedatatoken}}",
-      "AMS_ONEDATA_CACHE": "{{ams_config_onedatacache}}"
     }
     }
   ]
