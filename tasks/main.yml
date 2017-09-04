@@ -1,6 +1,4 @@
 ---
 
-- include: cvmfs-config.yml
-  when: (ams_config_node is defined) and (ams_config_node == "wn")
-- include: start-ams-apps.yml
-  when: ams_config_node is undefined
+- include: start-condor-apps.yml
+  when: condor_config_node is undefined
