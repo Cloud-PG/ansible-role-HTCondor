@@ -1,0 +1,4 @@
+---
+
+- include: start-condor-apps.yml
+  when: condor_config_node is undefined
