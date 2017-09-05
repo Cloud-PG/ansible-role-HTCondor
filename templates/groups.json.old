@@ -1,41 +1,38 @@
 {
-"id": "/deploy",
-"groups": [
-{
-  "id": "/deploy/master",
+  "id": "master",
   "apps":[
     {
-    "id": "/deploy/master/htcondor-master",
-    "args": ["-m", "192.168.150.178"],
+    "id": "htcondor-master",
+    "args": ["-m", "{{condor_config_cm_ip}}"],
     "cpus": 1,
     "mem": 1024.0,
     "container": {
       "type": "DOCKER",
       "docker": {
-        "image": "ciangom/htcondor-docker-centos",
+        "image": "{{condor_config_image}}",
         "network": "HOST"
       }
     },
     "constraints": [
       ["hostname", "UNIQUE"],
-      ["hostname", "LIKE", "192.168.150.178"]
+      ["hostname", "LIKE", "{{condor_config_cm_ip}}"]
     ]
     }
   ]
 },
 {
-  "id": "/deploy/schedd",
+  "id": "schedd",
   "apps":[
     {
-    "id": "/deploy/schedd/htcondor-submitter",
-    "args": ["-s", "192.168.150.178", "-I", "192.168.150.179", "-k", "https://raw.githubusercontent.com/Cloud-PG/mesos-condor-ams-cluster/master/id_rsa.pub"],
+    "id": "htcondor-submitter",
+    "args": ["-s", "{{condor_config_cm_ip}}", "-I", "{{condor_config_schedd_ip}}", "-k", "{{public_key_url}}"],
     "cpus": 3,
     "mem": 2048.0,
-    "dependencies": ["/deploy/master"],
+    "dependencies": ["/master"],
     "container": {
       "type": "DOCKER",
       "docker": {
-        "image": "ciangom/htcondor-docker-centos",
+        "image": "{{condor_config_image}}",
         "privileged": true,
         "network": "HOST"
       },
@@ -51,25 +48,25 @@
     },
     "constraints": [
       ["hostname", "UNIQUE"],
-      ["hostname", "LIKE", "192.168.150.179"]
+      ["hostname", "LIKE", "{{condor_config_schedd_ip}}"]
     ]
     }
   ]
 },
 {
-  "id": "/deploy/worker-nodes",
+  "id": "worker-nodes",
   "apps":[
     {
-    "id": "/deploy/worker-nodes/htcondor-executor",
-    "args": ["-e", "192.168.150.178"],
+    "id": "htcondor-executor",
+    "args": ["-e", "{{condor_config_cm_ip}}"],
     "cpus": 1,
     "mem": 2000.0,
-    "dependencies": ["/deploy/schedd"],
+    "dependencies": ["/schedd"],
     "instances": 2,
     "container": {
       "type": "DOCKER",
       "docker": {
-        "image": "ciangom/htcondor-docker-centos",
+        "image": "{{condor_config_image}}",
         "forcePullImage": true,
         "privileged": true,
         "network": "BRIDGE"
@@ -82,6 +79,4 @@
     }
     }
   ]
-}
-]
 }
