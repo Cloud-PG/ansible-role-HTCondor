@@ -6,19 +6,19 @@
   "apps":[
     {
     "id": "/deploy/master/htcondor-master",
-    "args": ["-m", "192.168.150.178"],
+    "args": ["-m", "{{condor_config_cm_ip}}"],
     "cpus": 1,
     "mem": 1024.0,
     "container": {
       "type": "DOCKER",
       "docker": {
-        "image": "ciangom/htcondor-docker-centos",
+        "image": "{{condor_config_image}}",
         "network": "HOST"
       }
     },
     "constraints": [
       ["hostname", "UNIQUE"],
-      ["hostname", "LIKE", "192.168.150.178"]
+      ["hostname", "LIKE", "{{condor_config_cm_ip}}"]
     ]
     }
   ]
@@ -28,14 +28,14 @@
   "apps":[
     {
     "id": "/deploy/schedd/htcondor-submitter",
-    "args": ["-s", "192.168.150.178", "-I", "192.168.150.179", "-k", "https://raw.githubusercontent.com/Cloud-PG/mesos-condor-ams-cluster/master/id_rsa.pub"],
+    "args": ["-s", "{{condor_config_cm_ip}}", "-I", "{{condor_config_schedd_ip}}", "-k", "{{public_key_url}}"],
     "cpus": 3,
     "mem": 2048.0,
     "dependencies": ["/deploy/master"],
     "container": {
       "type": "DOCKER",
       "docker": {
-        "image": "ciangom/htcondor-docker-centos",
+        "image": "{{condor_config_image}}",
         "privileged": true,
         "network": "HOST"
       },
@@ -51,7 +51,7 @@
     },
     "constraints": [
       ["hostname", "UNIQUE"],
-      ["hostname", "LIKE", "192.168.150.179"]
+      ["hostname", "LIKE", "{{condor_config_schedd_ip}}"]
     ]
     }
   ]
@@ -61,7 +61,7 @@
   "apps":[
     {
     "id": "/deploy/worker-nodes/htcondor-executor",
-    "args": ["-e", "192.168.150.178"],
+    "args": ["-e", "{{condor_config_cm_ip}}"],
     "cpus": 1,
     "mem": 2000.0,
     "dependencies": ["/deploy/schedd"],
@@ -69,7 +69,7 @@
     "container": {
       "type": "DOCKER",
       "docker": {
-        "image": "ciangom/htcondor-docker-centos",
+        "image": "{{condor_config_image}}",
         "forcePullImage": true,
         "privileged": true,
         "network": "BRIDGE"
